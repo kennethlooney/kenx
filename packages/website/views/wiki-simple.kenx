@@ -18,12 +18,16 @@
         <li><a href="/wiki/api/websocket">WebSocket</a></li>
         <li><a href="/wiki/api/plugins">Plugins</a></li>
       </ul>
-      
-      <h4>Examples</h4>
+        <h4>Examples</h4>
       <ul>
         <li><a href="/wiki/examples/rest-api">REST API</a></li>
         <li><a href="/wiki/examples/fullstack-app">Full-Stack App</a></li>
         <li><a href="/wiki/examples/chat-app">Chat Application</a></li>
+      </ul>
+      
+      <h4>Project Info</h4>
+      <ul>
+        <li><a href="/wiki/project-status">📊 Status & TODO</a></li>
       </ul>
     </nav>
   </div>

@@ -65,6 +65,7 @@
 ### 🔥 **HIGH PRIORITY - Next Session**
 
 #### **Documentation & Content**
+- [ ] **Bug Fix** - Fix `{% layout 'main' %}` in about page at top of page
 - [ ] **Complete Wiki Content** - Expand all wiki pages with comprehensive documentation
   - [ ] Finish `/wiki/getting-started/installation` with complete setup instructions
   - [ ] Write `/wiki/getting-started/first-app` with step-by-step tutorial  

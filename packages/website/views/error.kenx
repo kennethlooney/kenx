@@ -1,0 +1,66 @@
+<div class="error-container">
+  <div class="error-content">
+    <h1>🚫 {{title}}</h1>
+    <p class="error-message">{{error}}</p>
+    
+    <div class="error-actions">
+      <a href="/wiki" class="btn btn-primary">📚 Back to Documentation</a>
+      <a href="/" class="btn btn-secondary">🏠 Go Home</a>
+    </div>
+  </div>
+</div>
+
+<style>
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.error-content h1 {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+}
+
+.error-message {
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #3498db;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2980b9;
+}
+
+.btn-secondary {
+  background: #95a5a6;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #7f8c8d;
+}
+</style>

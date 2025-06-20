@@ -1,0 +1,49 @@
+{
+  "name": "kenx-monorepo",
+  "version": "1.0.0",
+  "description": "Kenx Framework - A modern, lightweight Node.js web framework with TypeScript support",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev:framework": "npm run dev --workspace=packages/framework",
+    "dev:website": "npm run dev --workspace=packages/website",
+    "start:website": "npm run start --workspace=packages/website",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "format": "npm run format --workspaces",
+    "clean": "npm run clean --workspaces",
+    "install:all": "npm install",
+    "wiki:sync": "node scripts/sync-wiki.js",
+    "wiki:sync:manual": "bash scripts/sync-wiki.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.3",
+    "typescript": "^5.6.3",
+    "prettier": "^3.3.3",
+    "eslint": "^9.29.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/kenx.git"
+  },
+  "keywords": [
+    "web",
+    "framework",
+    "http",
+    "server",
+    "typescript",
+    "nodejs",
+    "express",
+    "hapi",
+    "middleware",
+    "routing",
+    "fullstack"
+  ],
+  "author": "",
+  "license": "MIT"
+}

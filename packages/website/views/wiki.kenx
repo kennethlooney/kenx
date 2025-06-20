@@ -1,0 +1,257 @@
+<div class="wiki-container">
+  <div class="wiki-sidebar">
+    <h3>📚 Documentation</h3>
+    <nav class="wiki-nav">
+      <h4>Getting Started</h4>
+      <ul>
+        <li><a href="/wiki/getting-started/installation">Installation</a></li>
+        <li><a href="/wiki/getting-started/first-app">Your First App</a></li>
+        <li><a href="/wiki/getting-started/project-structure">Project Structure</a></li>
+      </ul>
+      
+      <h4>API Reference</h4>
+      <ul>
+        <li><a href="/wiki/api/routing">Routing</a></li>
+        <li><a href="/wiki/api/middleware">Middleware</a></li>
+        <li><a href="/wiki/api/database">Database ORM</a></li>
+        <li><a href="/wiki/api/templates">Templates</a></li>
+        <li><a href="/wiki/api/websocket">WebSocket</a></li>
+        <li><a href="/wiki/api/plugins">Plugins</a></li>
+      </ul>
+      
+      <h4>Examples</h4>
+      <ul>
+        <li><a href="/wiki/examples/rest-api">REST API</a></li>
+        <li><a href="/wiki/examples/fullstack-app">Full-Stack App</a></li>
+        <li><a href="/wiki/examples/chat-app">Chat Application</a></li>
+      </ul>
+    </nav>
+  </div>
+  
+  <div class="wiki-content">
+    <div class="breadcrumbs">
+      {{#each breadcrumbs}}
+        {{#if @last}}
+          <span class="breadcrumb-current">{{title}}</span>
+        {{else}}
+          <a href="{{url}}" class="breadcrumb-link">{{title}}</a>
+          <span class="breadcrumb-separator">→</span>
+        {{/if}}
+      {{/each}}
+    </div>
+    
+    <article class="wiki-article">
+      {{{content}}}
+    </article>
+    
+    <div class="wiki-footer">
+      <hr>
+      <p>
+        <small>
+          📝 Found an error in this documentation? 
+          <a href="https://github.com/yourusername/kenx/edit/main/packages/website/wiki/{{currentPage}}.md" target="_blank">
+            Edit this page on GitHub
+          </a>
+        </small>
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+.wiki-container {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.wiki-sidebar {
+  flex: 0 0 250px;
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.wiki-sidebar h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.wiki-sidebar h4 {
+  margin: 1.5rem 0 0.5rem 0;
+  color: #34495e;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wiki-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.wiki-nav li {
+  margin: 0.25rem 0;
+}
+
+.wiki-nav a {
+  color: #555;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: block;
+  transition: all 0.2s;
+}
+
+.wiki-nav a:hover {
+  background: #e9ecef;
+  color: #3498db;
+}
+
+.wiki-content {
+  flex: 1;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.breadcrumb-link {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  color: #999;
+}
+
+.breadcrumb-current {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.wiki-article {
+  max-width: none;
+  line-height: 1.7;
+}
+
+.wiki-article h1 {
+  color: #2c3e50;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.wiki-article h2 {
+  color: #34495e;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.25rem;
+}
+
+.wiki-article h3 {
+  color: #555;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.wiki-article code {
+  background: #f1f2f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: #c7254e;
+}
+
+.wiki-article pre {
+  background: #2d3748;
+  color: #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.wiki-article pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+.wiki-article blockquote {
+  border-left: 4px solid #3498db;
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-radius: 0 6px 6px 0;
+}
+
+.wiki-article ul, .wiki-article ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.wiki-article li {
+  margin: 0.5rem 0;
+}
+
+.wiki-article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.wiki-article th, .wiki-article td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.wiki-article th {
+  background: #f8f9fa;
+  font-weight: 600;
+}
+
+.wiki-footer {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.wiki-footer a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.wiki-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .wiki-container {
+    flex-direction: column;
+  }
+  
+  .wiki-sidebar {
+    flex: none;
+    position: static;
+  }
+}
+</style>

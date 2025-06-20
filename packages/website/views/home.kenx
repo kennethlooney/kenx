@@ -1,0 +1,81 @@
+<div class="hero">
+    <h2>{{ title }}</h2>
+    <p>Experience the power of a modern full-stack framework built for speed and developer experience.</p>
+</div>
+
+<div class="features">
+    <h3>🎯 Framework Features</h3>
+    <div class="feature-grid">
+        <div class="feature">
+            <h4>🗄️ Built-in Database ORM</h4>
+            <p>JSON-based database with model definitions, validation, and query support</p>
+        </div>
+        <div class="feature">
+            <h4>🎨 Template Engine</h4>
+            <p>Custom template engine with layouts, partials, and powerful templating features</p>
+        </div>
+        <div class="feature">
+            <h4>⚡ Real-time WebSocket</h4>
+            <p>Built-in WebSocket support with rooms, authentication, and message handling</p>
+        </div>
+        <div class="feature">
+            <h4>🔗 Request Hooks</h4>
+            <p>Lifecycle hooks for before:request, after:response, and error handling</p>
+        </div>
+    </div>
+</div>
+
+{% if posts %}
+<div class="posts">
+    <h3>📝 Recent Posts</h3>
+    {% for post in posts %}
+    <div class="post">
+        <h4>{{ post.title }}</h4>
+        <p>{{ post.content }}</p>
+        <small>Created: {{ post.createdAt }} | Author ID: {{ post.authorId }}</small>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<style>
+    .hero {
+        text-align: center;
+        padding: 40px 0;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 40px;
+    }
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .feature {
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #f9f9f9;
+    }
+    .feature h4 {
+        margin: 0 0 10px 0;
+        color: #333;
+    }
+    .posts {
+        margin-top: 40px;
+    }
+    .post {
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        background: #fafafa;
+    }
+    .post h4 {
+        margin: 0 0 10px 0;
+        color: #2c3e50;
+    }
+    .post small {
+        color: #666;
+    }
+</style>

@@ -1,0 +1,141 @@
+name: Sync Wiki to GitHub
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'packages/website/wiki/**'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'packages/website/wiki/**'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "Wiki Sync Bot"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+    - name: Clone Wiki Repository
+      run: |
+        git clone https://github.com/${{ github.repository }}.wiki.git wiki-repo
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Sync Wiki Files
+      run: |
+        # Remove existing files (except .git)
+        find wiki-repo -type f -not -path "*/\.git/*" -delete
+        
+        # Copy wiki files
+        cp -r packages/website/wiki/* wiki-repo/
+        
+        cd wiki-repo
+        
+        # Convert directory structure to GitHub wiki naming convention
+        find . -name "*.md" -type f | while read -r file; do
+          if [[ "$file" != "./Home.md" && "$file" != "./index.md" ]]; then
+            # Convert paths like "getting-started/installation.md" to "Getting-Started-Installation.md"
+            new_name=$(echo "$file" | sed 's|^\./||' | sed 's|/|-|g' | \
+              sed 's/\b\w/\U&/g' | sed 's/-\([a-z]\)/-\U\1/g')
+            if [[ "$file" != "./$new_name" ]]; then
+              mv "$file" "$new_name" 2>/dev/null || true
+              echo "Renamed: $file -> $new_name"
+            fi
+          fi
+        done
+        
+        # Rename index.md to Home.md (GitHub wiki homepage)
+        if [ -f "index.md" ]; then
+          mv "index.md" "Home.md"
+          echo "Renamed: index.md -> Home.md"
+        fi
+        
+        # Remove empty directories
+        find . -type d -empty -not -path "./\.git*" -delete
+
+    - name: Update Wiki Sidebar
+      run: |
+        cd wiki-repo
+        
+        # Create _Sidebar.md for GitHub wiki navigation
+        cat > _Sidebar.md << 'EOF'
+        ## 📚 Kenx Framework Documentation
+        
+        ### Getting Started
+        * [Installation](Getting-Started-Installation)
+        * [Your First App](Getting-Started-First-App)
+        
+        ### API Reference
+        * [Routing](Api-Routing)
+        * [Database ORM](Api-Database)
+        * [Middleware](Api-Middleware)
+        * [Templates](Api-Templates)
+        * [WebSocket](Api-Websocket)
+        * [Plugins](Api-Plugins)
+        
+        ### Examples
+        * [REST API](Examples-Rest-Api)
+        * [Full-Stack App](Examples-Fullstack-App)
+        * [Chat Application](Examples-Chat-App)
+        
+        ---
+        
+        **🔗 Links**
+        * [Main Repository](https://github.com/${{ github.repository }})
+        * [Issues](https://github.com/${{ github.repository }}/issues)
+        * [Discussions](https://github.com/${{ github.repository }}/discussions)
+        EOF
+
+    - name: Commit and Push to Wiki
+      run: |
+        cd wiki-repo
+        
+        git add .
+        
+        if git diff --staged --quiet; then
+          echo "No changes to sync"
+        else
+          git commit -m "Auto-sync wiki from main repository
+
+          Updated: $(date '+%Y-%m-%d %H:%M:%S UTC')
+          Commit: ${{ github.sha }}
+          Workflow: ${{ github.workflow }}"
+          
+          git push origin master
+          echo "✅ Wiki synced successfully!"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Wiki Links Summary
+      run: |
+        echo "## 📚 Wiki Sync Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "The following wiki pages are now available:" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        cd wiki-repo
+        find . -name "*.md" -not -name "_*" | sort | while read -r file; do
+          filename=$(basename "$file" .md)
+          echo "- [$filename](https://github.com/${{ github.repository }}/wiki/$filename)" >> $GITHUB_STEP_SUMMARY
+        done
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🔗 [View Complete Wiki](https://github.com/${{ github.repository }}/wiki)" >> $GITHUB_STEP_SUMMARY

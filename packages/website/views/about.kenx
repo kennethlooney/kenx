@@ -1,0 +1,31 @@
+{% layout 'main' %}
+
+<div class="container">
+  <div class="card">
+    <h1>About Our Website</h1>
+    <p>Welcome to our demo website built with the <strong>{{ framework }}</strong> framework!</p>
+    
+    <h2>What is Kenx?</h2>
+    <p>Kenx is a modern, lightweight Node.js web framework built with TypeScript. It combines the best features of popular frameworks like Express and Hapi, while providing additional built-in functionality for full-stack development.</p>
+    
+    <h2>Key Features</h2>
+    <ul>
+      <li>🚀 <strong>TypeScript-first</strong> - Built with type safety in mind</li>
+      <li>🗄️ <strong>Built-in ORM</strong> - JSON-based database with models and relationships</li>
+      <li>🎨 <strong>Custom Template Engine</strong> - Kenx template syntax with layouts</li>
+      <li>⚡ <strong>Real-time WebSocket</strong> - Built-in WebSocket support for real-time features</li>
+      <li>🔧 <strong>Middleware System</strong> - Express-like middleware pipeline</li>
+      <li>🔌 <strong>Plugin Architecture</strong> - Extensible with custom plugins</li>
+      <li>📁 <strong>Static File Serving</strong> - Built-in static file handling</li>
+      <li>🛡️ <strong>Security</strong> - Built-in validation, sanitization, and CORS</li>
+    </ul>
+    
+    <h2>Framework Version</h2>
+    <p>Current version: <code>{{ version }}</code></p>
+    
+    <div style="margin-top: 30px;">
+      <a href="/" class="btn">← Back to Home</a>
+      <a href="/chat" class="btn">Try Real-time Chat →</a>
+    </div>
+  </div>
+</div>

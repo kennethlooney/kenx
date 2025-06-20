@@ -26,10 +26,9 @@
   },
   "engines": {
     "node": ">=14.0.0"
-  },
-  "repository": {
+  },  "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/kenx.git"
+    "url": "git+https://github.com/kennethlooney/kenx.git"
   },
   "keywords": [
     "web",

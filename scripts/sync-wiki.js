@@ -7,10 +7,9 @@ const { execSync } = require('child_process');
  * Syncs local wiki markdown files to GitHub's wiki repository
  */
 
-class GitHubWikiSync {
-  constructor(config) {
+class GitHubWikiSync {  constructor(config) {
     this.config = {
-      githubUsername: config.githubUsername || 'yourusername',
+      githubUsername: config.githubUsername || 'kennethlooney',
       repoName: config.repoName || 'kenx',
       localWikiDir: config.localWikiDir || 'packages/website/wiki',
       tempDir: config.tempDir || 'temp-wiki-sync',
@@ -158,7 +157,7 @@ class GitHubWikiSync {
 // CLI usage
 if (require.main === module) {
   const config = {
-    githubUsername: process.env.GITHUB_USERNAME || 'yourusername',
+    githubUsername: process.env.GITHUB_USERNAME || 'kennethlooney',
     repoName: process.env.REPO_NAME || 'kenx',
     localWikiDir: process.env.LOCAL_WIKI_DIR || 'packages/website/wiki'
   };

@@ -6,7 +6,7 @@
 set -e
 
 # Configuration
-GITHUB_USERNAME="yourusername"
+GITHUB_USERNAME="kennethlooney"
 REPO_NAME="kenx"
 WIKI_REPO_URL="https://github.com/${GITHUB_USERNAME}/${REPO_NAME}.wiki.git"
 LOCAL_WIKI_DIR="packages/website/wiki"

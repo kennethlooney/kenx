@@ -27,20 +27,16 @@
       </ul>
     </nav>
   </div>
-    <div class="wiki-content">
+  
+  <div class="wiki-content">
     <div class="breadcrumbs">
-      {% for breadcrumb in breadcrumbs %}
-        {% if breadcrumb.active %}
-          <span class="breadcrumb-current">{{ breadcrumb.title }}</span>
-        {% else %}
-          <a href="{{ breadcrumb.url }}" class="breadcrumb-link">{{ breadcrumb.title }}</a>
-          <span class="breadcrumb-separator">→</span>
-        {% endif %}
-      {% endfor %}
+      <a href="/wiki" class="breadcrumb-link">Documentation</a>
+      <span class="breadcrumb-separator">→</span>
+      <span class="breadcrumb-current">{{ currentPage }}</span>
     </div>
     
     <article class="wiki-article">
-      {{{content}}}
+      {{{ content }}}
     </article>
     
     <div class="wiki-footer">
@@ -48,9 +44,10 @@
       <p>
         <small>
           📝 Found an error in this documentation? 
-          <a href="https://github.com/yourusername/kenx/edit/main/packages/website/wiki/{{currentPage}}.md" target="_blank">
+          <a href="https://github.com/yourusername/kenx/edit/main/packages/website/wiki/{{ currentPage }}.md" target="_blank">
             Edit this page on GitHub
-          </a>        </small>
+          </a>
+        </small>
       </p>
     </div>
   </div>

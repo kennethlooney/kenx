@@ -7,6 +7,7 @@
     "packages/*"
   ],  "scripts": {
     "build": "npm run build --workspaces",
+    "dev": "npm run dev:website",
     "dev:framework": "npm run dev --workspace=packages/framework",
     "dev:website": "npm run dev --workspace=packages/website",
     "start:website": "npm run start --workspace=packages/website",

@@ -7,7 +7,7 @@
 			"command": "npm",
 			"args": [
 				"run",
-				"dev"
+				"dev:website"
 			],
 			"group": "build",
 			"isBackground": true,

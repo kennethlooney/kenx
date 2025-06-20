@@ -98,3 +98,4 @@ coverage/
 # Misc
 *.tsbuildinfo
 node_modules
+nul

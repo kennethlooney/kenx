@@ -15,7 +15,7 @@ export interface ViewConfig {
 }
 
 export interface RenderOptions {
-  layout?: string;
+  layout?: string | false;
   partials?: { [name: string]: string };
   [key: string]: any;
 }
@@ -32,15 +32,27 @@ export class KenxViews {
     };
 
     this.setupHandlebarsHelpers();
-  }
-  // Render a template
+  }  // Render a template
   async render(templateName: string, data: any = {}, options: RenderOptions = {}): Promise<string> {
     try {
+      console.log('🔍 KenxViews.render called with templateName:', templateName);
+      console.log('🔍 Render options:', options);
+      
       const templatePath = this.resolveTemplatePath(templateName);
+      console.log('🔍 Resolved template path:', templatePath);
       
       if (!fs.existsSync(templatePath)) {
+        console.log('❌ Template file does not exist at:', templatePath);
         throw new Error(`Template not found: ${templateName} at ${templatePath}`);
       }
+      
+      console.log('✅ Template file exists, proceeding with engine:', this.config.engine);      
+      if (!fs.existsSync(templatePath)) {
+        console.log('❌ Template file does not exist at:', templatePath);
+        throw new Error(`Template not found: ${templateName} at ${templatePath}`);
+      }
+      
+      console.log('✅ Template file exists, proceeding with engine:', this.config.engine);
 
       let content: string;
 
@@ -55,16 +67,24 @@ export class KenxViews {
           content = await this.renderKenx(templatePath, data, options);
           break;
         default:
-          throw new Error(`Unsupported template engine: ${this.config.engine}`);
-      }      // Apply layout if specified
-      if (options.layout || this.config.defaultLayout) {
+          throw new Error(`Unsupported template engine: ${this.config.engine}`);      }
+
+      console.log('🔍 Content after template engine processing (first 200 chars):', content.substring(0, 200));
+
+      // Apply layout if specified
+      if (options.layout !== false && (options.layout || this.config.defaultLayout)) {
         const layoutName = options.layout || this.config.defaultLayout!;
         const layoutPath = this.resolveLayoutPath(layoutName);
+        
+        console.log('🔍 Applying layout:', layoutName, 'at path:', layoutPath);
         
         if (fs.existsSync(layoutPath)) {
           const layoutData = { ...data, body: content };
           content = await this.renderTemplate(layoutPath, layoutData, { ...options, layout: undefined });
+          console.log('🔍 Content after layout applied (first 200 chars):', content.substring(0, 200));
         }
+      } else {
+        console.log('🔍 Skipping layout (layout=false or no default layout)');
       }
 
       return content;
@@ -156,28 +176,40 @@ export class KenxViews {
     
     if (this.config.cache) {
       this.templateCache.set(cacheKey, template);
-    }
-
-    return this.processKenxTemplate(template, data);
+    }    return this.processKenxTemplate(template, data);
   }
+
   // Process Kenx template syntax
   private processKenxTemplate(template: string, data: any): string {
     let result = template;
 
-    // Replace variables: {{ variable }}
-    result = result.replace(/\{\{\s*([^}]+)\s*\}\}/g, (match, expr) => {
+    // Handle triple braces for unescaped content FIRST: {{{ variable }}}
+    result = result.replace(/\{\{\{\s*([^}]+)\s*\}\}\}/g, (match, expr) => {
       try {
-        return this.evaluateExpression(expr.trim(), data) || '';
+        const value = this.evaluateExpression(expr.trim(), data);
+        return value !== undefined && value !== null ? String(value) : '';
       } catch (error) {
         console.warn(`Template expression error: ${expr}`, error);
         return match;
       }
     });
 
-    // Handle triple braces for unescaped content: {{{ variable }}}
-    result = result.replace(/\{\{\{\s*([^}]+)\s*\}\}\}/g, (match, expr) => {
+    // Replace variables SECOND: {{ variable }}
+    result = result.replace(/\{\{\s*([^}]+)\s*\}\}/g, (match, expr) => {
       try {
-        return this.evaluateExpression(expr.trim(), data) || '';
+        const value = this.evaluateExpression(expr.trim(), data);
+        // Escape HTML for double braces
+        const stringValue = value !== undefined && value !== null ? String(value) : '';
+        return stringValue.replace(/[&<>"']/g, (char) => {
+          const map: { [key: string]: string } = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          };
+          return map[char];
+        });
       } catch (error) {
         console.warn(`Template expression error: ${expr}`, error);
         return match;

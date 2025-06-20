@@ -125,19 +125,20 @@ app.get('/chat', async (req: KenxRequest, res: KenxResponse) => {
 
 // Wiki Routes
 app.get('/wiki', async (req: KenxRequest, res: KenxResponse) => {
-  // Redirect to main wiki page
+  console.log('🔍 Wiki route hit - /wiki');
   const wikiPath = path.join(__dirname, '../wiki/index.md');
+  console.log('📁 Wiki path:', wikiPath);
+  
   try {
-    const content = fs.readFileSync(wikiPath, 'utf-8');
-    const htmlContent = marked(content);
-    
-    await res.render('wiki', {
+    const content = fs.readFileSync(wikiPath, 'utf-8');    const htmlContent = marked(content);    console.log('✅ Wiki content loaded, rendering wiki template');
+    console.log('📄 Template data:', { title: 'Kenx Framework Documentation', currentPage: 'index', breadcrumbs: [{ title: 'Documentation', url: '/wiki' }] });    await res.render('wiki-simple', {
       title: 'Kenx Framework Documentation',
       content: htmlContent,
       currentPage: 'index',
-      breadcrumbs: [{ title: 'Documentation', url: '/wiki' }]
-    });
+      breadcrumbs: [{ title: 'Documentation', url: '/wiki', active: true }]
+    }, { layout: 'wiki' });
   } catch (error) {
+    console.log('❌ Wiki error:', error);
     res.status(404).render('error', {
       title: 'Wiki Not Found',
       error: 'Documentation page not found'
@@ -172,13 +173,12 @@ app.get('/wiki/*', async (req: KenxRequest, res: KenxResponse) => {
         active: currentPath === wikiPath
       });
     }
-    
-    await res.render('wiki', {
+      await res.render('wiki', {
       title: `${title} - Kenx Documentation`,
       content: htmlContent,
       currentPage: wikiPath,
       breadcrumbs
-    });
+    }, { layout: 'wiki' });
   } catch (error) {
     res.status(404).render('error', {
       title: 'Wiki Page Not Found',

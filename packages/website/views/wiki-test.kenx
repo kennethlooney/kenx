@@ -1,0 +1,3 @@
+<h1>TEST WIKI PAGE - SIMPLE</h1>
+<p>This is a test wiki page to check if the issue is in the template.</p>
+<p>Content from markdown: {{{content}}}</p>

@@ -44,6 +44,9 @@
     "routing",
     "fullstack"
   ],
-  "author": "",
+  "author": {
+    "name": "Kenneth Looney",
+    "email": "ken.looney05@gmail.com",
+    "url": "https://kennethlooney.com"},
   "license": "MIT"
 }

@@ -2,7 +2,7 @@
 
 A modern, lightweight Node.js web framework built with TypeScript, featuring a monorepo structure with the framework and a demo website.
 
-## í¿—ï¸ Monorepo Structure
+## ï¿½ï¿½ï¿½ï¸ Monorepo Structure
 
 ```
 kenx/
@@ -21,7 +21,18 @@ kenx/
 â””â”€â”€ README.md              # This file
 ```
 
-## íº€ Quick Start
+## ğŸš€ Quick Start
+
+### ğŸ”® Coming Soon: CLI Generator!
+
+> **ğŸ“ Next Major Feature**: We're building a CLI tool to make project creation super easy:
+>
+> ```bash
+> npx create-kenx-app my-app
+> # Choose: Full-Stack, API Backend, or Frontend Client
+> ```
+>
+> For now, follow the manual setup below or check the [examples](packages/framework/examples/).
 
 ### Prerequisites
 - Node.js 16+ 
@@ -44,26 +55,29 @@ npm run build
 npm run start:website
 ```
 
-## í³¦ Packages
+## ï¿½ï¿½ï¿½ Packages
 
 ### @kenx/framework
 The core Kenx framework package providing:
-- í» ï¸ **TypeScript-first** - Built with TypeScript for excellent developer experience
-- í´€ **Middleware-based** - Express-like middleware pattern
-- í´Œ **Plugin system** - Extensible architecture with plugins
-- í·„ï¸ **Built-in database** - Simple JSON-based database with ORM-like interface
-- í¾¨ **Template engine** - Custom template engine with layouts
+- ğŸ—ï¸ **TypeScript-first** - Built with TypeScript for excellent developer experience
+- ğŸ”„ **Middleware-based** - Express-like middleware pattern
+- ğŸ§© **Plugin system** - Extensible architecture with plugins
+- ğŸ—„ï¸ **Built-in database** - Simple JSON-based database with ORM-like interface
+- ğŸ¨ **Template engine** - Custom template engine with layouts
 - âš¡ **WebSocket support** - Real-time features out of the box
-- í³ **Static file serving** - Built-in static file server
+- ğŸ“ **Static file serving** - Built-in static file server
+- ğŸ” **Authentication** - JWT, sessions, role-based access control
+- ğŸ›¡ï¸ **Security** - CORS, CSRF, rate limiting, security headers
+- ğŸ”— **Frontend/Backend Separation** - API-only or full-stack deployment
 
 ### @kenx/website
 A full-featured demo website showcasing Kenx framework capabilities:
-- í¿  **Homepage** - Dynamic content with database integration
-- í²¬ **Real-time chat** - WebSocket-powered chat application
-- í´Œ **REST API** - JSON API endpoints
-- í³± **Responsive design** - Modern, mobile-friendly interface
+- ï¿½ï¿½ï¿½ **Homepage** - Dynamic content with database integration
+- ï¿½ï¿½ï¿½ **Real-time chat** - WebSocket-powered chat application
+- ï¿½ï¿½ï¿½ **REST API** - JSON API endpoints
+- ï¿½ï¿½ï¿½ **Responsive design** - Modern, mobile-friendly interface
 
-## í» ï¸ Development Commands
+## ï¿½ï¿½ï¿½ï¸ Development Commands
 
 ### Root Level Commands
 ```bash
@@ -115,7 +129,7 @@ npm run start
 npm run dev
 ```
 
-## í¼Ÿ Framework Features
+## ï¿½ï¿½ï¿½ Framework Features
 
 ### Core Framework
 - **Routing**: Express-like routing with middleware support
@@ -140,7 +154,7 @@ npm run dev
 - **Built-in plugins**: Authentication, validation, and more
 - **Lifecycle hooks**: Plugin installation and management
 
-## í³š Usage Examples
+## ï¿½ï¿½ï¿½ Usage Examples
 
 ### Basic Application
 ```typescript
@@ -181,7 +195,7 @@ app.get('/users', (req, res) => {
 });
 ```
 
-## í·ª Testing
+## ï¿½ï¿½ï¿½ Testing
 
 The framework includes comprehensive tests:
 
@@ -196,7 +210,7 @@ npm run test --workspace=@kenx/framework
 npm run test:watch
 ```
 
-## í´ Contributing
+## ï¿½ï¿½ï¿½ Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -205,11 +219,11 @@ npm run test:watch
 5. Run tests and ensure they pass
 6. Submit a pull request
 
-## í³„ License
+## ï¿½ï¿½ï¿½ License
 
 MIT License - see LICENSE file for details.
 
-## í´— Links
+## ï¿½ï¿½ï¿½ Links
 
 - [Framework Documentation](packages/framework/README.md)
 - [Website Demo](packages/website/README.md)

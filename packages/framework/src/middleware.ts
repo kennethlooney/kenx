@@ -1,5 +1,8 @@
 import { KenxRequest, KenxResponse, NextFunction } from './index';
 
+// Re-export auth middleware
+export { auth, jwtAuth, requireRole, PasswordUtils, UserManager, sessionManager, csrfProtection, authRateLimit, JWT } from './auth';
+
 // JSON body parser middleware
 export function json(): (req: KenxRequest, res: KenxResponse, next: NextFunction) => void {
   return (req: KenxRequest, res: KenxResponse, next: NextFunction) => {
@@ -181,5 +184,132 @@ export function rateLimit(options: {
     } else {
       res.error(message, 429);
     }
+  };
+}
+
+// Security headers middleware
+export function securityHeaders(options: {
+  contentSecurityPolicy?: string;
+  hsts?: boolean;
+  noSniff?: boolean;
+  frameOptions?: 'DENY' | 'SAMEORIGIN' | string;
+  xssProtection?: boolean;
+} = {}): (req: KenxRequest, res: KenxResponse, next: NextFunction) => void {
+  return (req: KenxRequest, res: KenxResponse, next: NextFunction) => {
+    // Content Security Policy
+    if (options.contentSecurityPolicy) {
+      res.setHeader('Content-Security-Policy', options.contentSecurityPolicy);
+    }
+    
+    // HTTP Strict Transport Security
+    if (options.hsts !== false) {
+      res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    }
+    
+    // X-Content-Type-Options
+    if (options.noSniff !== false) {
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+    }
+    
+    // X-Frame-Options
+    const frameOptions = options.frameOptions || 'DENY';
+    res.setHeader('X-Frame-Options', frameOptions);
+    
+    // X-XSS-Protection
+    if (options.xssProtection !== false) {
+      res.setHeader('X-XSS-Protection', '1; mode=block');
+    }
+    
+    // Remove potentially revealing headers
+    res.removeHeader('X-Powered-By');
+    res.setHeader('X-Powered-By', 'Kenx');
+    
+    next();
+  };
+}
+
+// Compression middleware (simple gzip)
+export function compress(): (req: KenxRequest, res: KenxResponse, next: NextFunction) => void {
+  return (req: KenxRequest, res: KenxResponse, next: NextFunction) => {
+    const acceptEncoding = req.headers['accept-encoding'] as string || '';
+    
+    if (acceptEncoding.includes('gzip')) {
+      const zlib = require('zlib');
+      const originalSend = res.send;
+      const originalJson = res.json;
+      
+      res.send = function(data: any) {
+        if (typeof data === 'string' && data.length > 1024) {
+          this.setHeader('Content-Encoding', 'gzip');
+          const compressed = zlib.gzipSync(data);
+          return originalSend.call(this, compressed);
+        }
+        return originalSend.call(this, data);
+      };
+      
+      res.json = function(data: any) {
+        const jsonString = JSON.stringify(data);
+        if (jsonString.length > 1024) {
+          this.setHeader('Content-Encoding', 'gzip');
+          this.setHeader('Content-Type', 'application/json');
+          const compressed = zlib.gzipSync(jsonString);
+          return this.end(compressed);
+        }
+        return originalJson.call(this, data);
+      };
+    }
+    
+    next();
+  };
+}
+
+// Request timeout middleware
+export function timeout(ms: number = 30000): (req: KenxRequest, res: KenxResponse, next: NextFunction) => void {
+  return (req: KenxRequest, res: KenxResponse, next: NextFunction) => {
+    const timer = setTimeout(() => {
+      if (!res.headersSent) {
+        res.error('Request timeout', 408);
+      }
+    }, ms);
+    
+    res.on('finish', () => {
+      clearTimeout(timer);
+    });
+    
+    res.on('close', () => {
+      clearTimeout(timer);
+    });
+    
+    next();
+  };
+}
+
+// Request ID middleware for tracing
+export function requestId(): (req: KenxRequest, res: KenxResponse, next: NextFunction) => void {
+  return (req: KenxRequest, res: KenxResponse, next: NextFunction) => {
+    const crypto = require('crypto');
+    const id = req.headers['x-request-id'] as string || crypto.randomUUID();
+    
+    req.context.requestId = id;
+    res.setHeader('X-Request-ID', id);
+    
+    next();
+  };
+}
+
+// Health check middleware
+export function healthCheck(path: string = '/health'): (req: KenxRequest, res: KenxResponse, next: NextFunction) => void {
+  return (req: KenxRequest, res: KenxResponse, next: NextFunction) => {
+    if (req.url === path && req.method === 'GET') {
+      return res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        version: process.version
+      });
+    }
+    
+    next();
   };
 }

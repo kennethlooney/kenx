@@ -11,6 +11,8 @@ export interface KenxRequest extends IncomingMessage {
   params?: { [key: string]: string };
   query?: { [key: string]: string | string[] };
   body?: any;
+  user?: any; // Authenticated user object
+  session?: { [key: string]: any }; // Session data
   context: {
     requestId: string;
     startTime: number;
@@ -18,6 +20,9 @@ export interface KenxRequest extends IncomingMessage {
   };
   validate: (schema: any) => boolean;
   sanitize: (data: any) => any;
+  isAuthenticated: () => boolean;
+  login: (user: any) => void;
+  logout: () => void;
 }
 
 export interface KenxResponse extends ServerResponse {
@@ -43,6 +48,7 @@ interface Route {
 }
 
 export interface KenxConfig {
+  port?: number;
   database?: DatabaseConfig;
   views?: ViewConfig;
   static?: {
@@ -53,6 +59,15 @@ export interface KenxConfig {
     enabled: boolean;
     path?: string;
   };
+  auth?: {
+    enabled: boolean;
+    sessionSecret?: string;
+    sessionExpiry?: number; // in milliseconds
+    loginRoute?: string;
+    logoutRoute?: string;
+    protectedRoutes?: string[];
+    jwtSecret?: string; // JWT secret key
+  };
 }
 
 export class Kenx extends EventEmitter {
@@ -60,13 +75,13 @@ export class Kenx extends EventEmitter {
   private globalMiddlewares: Middleware[] = [];
   private server?: Server;
   private hooks: Map<string, HookHandler[]> = new Map();
-  
-  // Full-stack components
+  private sessions: Map<string, any> = new Map(); // Session storage
+    // Full-stack components
   public db?: KenxDB;
   public views?: KenxViews;
   public ws?: KenxWebSocket;
   
-  private config: KenxConfig;
+  public config: KenxConfig;
 
   constructor(config: KenxConfig = {}) {
     super();
@@ -265,7 +280,6 @@ export class Kenx extends EventEmitter {
 
     await next();
   }
-
   private enhanceRequest(req: IncomingMessage): KenxRequest {
     const request = req as KenxRequest;
     
@@ -274,6 +288,62 @@ export class Kenx extends EventEmitter {
       requestId: uuidv4(),
       startTime: Date.now(),
       metadata: {}
+    };
+
+    // Initialize session if auth is enabled
+    if (this.config.auth?.enabled) {
+      const sessionId = this.extractSessionId(req);
+      if (sessionId && this.sessions.has(sessionId)) {
+        request.session = this.sessions.get(sessionId);
+        request.user = request.session?.user;
+      } else {
+        request.session = {};
+      }
+    }
+
+    // Add authentication methods
+    request.isAuthenticated = () => {
+      return !!(request.user && request.session);
+    };
+
+    request.login = (user: any) => {
+      if (!this.config.auth?.enabled) {
+        throw new Error('Authentication not enabled. Please configure auth in KenxConfig.');
+      }
+      
+      const sessionId = uuidv4();
+      const sessionData = {
+        user,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + (this.config.auth.sessionExpiry || 24 * 60 * 60 * 1000) // 24 hours default
+      };
+      
+      this.sessions.set(sessionId, sessionData);
+      request.session = sessionData;
+      request.user = user;
+      
+      // Set session cookie (you'd want to make this more secure in production)
+      const response = (request as any).res;
+      if (response) {
+        response.setHeader('Set-Cookie', `kenx-session=${sessionId}; HttpOnly; Path=/; SameSite=Strict`);
+      }
+    };
+
+    request.logout = () => {
+      if (request.session) {
+        const sessionId = this.extractSessionId(req);
+        if (sessionId) {
+          this.sessions.delete(sessionId);
+        }
+        request.session = {};
+        request.user = undefined;
+        
+        // Clear session cookie
+        const response = (request as any).res;
+        if (response) {
+          response.setHeader('Set-Cookie', 'kenx-session=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0');
+        }
+      }
     };
 
     // Add validation method
@@ -322,6 +392,16 @@ export class Kenx extends EventEmitter {
     };
 
     return request;
+  }
+
+  private extractSessionId(req: IncomingMessage): string | null {
+    const cookies = req.headers.cookie;
+    if (!cookies) return null;
+    
+    const sessionCookie = cookies.split(';').find(c => c.trim().startsWith('kenx-session='));
+    if (!sessionCookie) return null;
+    
+    return sessionCookie.split('=')[1];
   }
 
   private enhanceResponse(res: ServerResponse): KenxResponse {
@@ -427,7 +507,6 @@ export class Kenx extends EventEmitter {
     
     res.status(404).send('File not found');
   }
-
   // Server lifecycle
   listen(port: number, callback?: () => void): Server {
     this.server = createServer((req, res) => {
@@ -445,6 +524,11 @@ export class Kenx extends EventEmitter {
     return this.server;
   }
 
+  start(callback?: () => void): Server {
+    const port = this.config.port || 3000;
+    return this.listen(port, callback);
+  }
+
   close(callback?: (err?: Error) => void): void {
     if (this.ws) {
       this.ws.close();
@@ -459,5 +543,11 @@ export class Kenx extends EventEmitter {
 export function kenx(config?: KenxConfig): Kenx {
   return new Kenx(config);
 }
+
+// Export auth components
+export { auth, jwtAuth, requireRole, PasswordUtils, UserManager, sessionManager, csrfProtection, authRateLimit, JWT } from './auth';
+
+// Export middleware
+export * from './middleware';
 
 export default kenx;

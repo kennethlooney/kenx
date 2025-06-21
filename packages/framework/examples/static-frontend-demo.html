@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenx Decoupled Frontend Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .auth-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn.danger {
+            background: #e74c3c;
+        }
+        
+        .btn.danger:hover {
+            background: #c0392b;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .post-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .post-content {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        
+        .post-meta {
+            font-size: 12px;
+            color: #adb5bd;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .api-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        
+        @media (max-width: 768px) {
+            .auth-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Kenx Decoupled Frontend</h1>
+            <p>Frontend deployed to static hosting, backend API on separate server</p>
+        </div>
+        
+        <div class="card">
+            <h2>🌐 Architecture Overview</h2>
+            <div class="api-info">
+                <strong>Backend API:</strong> <span id="api-url">http://localhost:4000</span><br>
+                <strong>Frontend:</strong> Static HTML/CSS/JS (can be deployed to Netlify, Vercel, etc.)<br>
+                <strong>Communication:</strong> RESTful API with CORS enabled<br>
+                <strong>Authentication:</strong> JWT tokens with auto-refresh
+            </div>
+        </div>
+        
+        <div id="status"></div>
+        
+        <!-- Authentication Section -->
+        <div class="card">
+            <h2>🔐 Authentication</h2>
+            <div class="auth-section">
+                <!-- Login Form -->
+                <div id="login-section">
+                    <h3>Login</h3>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-username">Username:</label>
+                            <input type="text" id="login-username" placeholder="admin" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password:</label>
+                            <input type="password" id="login-password" placeholder="admin123" required>
+                        </div>
+                        <button type="submit" class="btn">Login</button>
+                    </form>
+                </div>
+                
+                <!-- Register Form -->
+                <div id="register-section">
+                    <h3>Register</h3>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-username">Username:</label>
+                            <input type="text" id="register-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email:</label>
+                            <input type="email" id="register-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password:</label>
+                            <input type="password" id="register-password" required>
+                        </div>
+                        <button type="submit" class="btn">Register</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Authenticated User Section -->
+            <div id="user-section" class="hidden">
+                <h3>👤 Logged in as: <span id="current-user"></span></h3>
+                <button id="logout-btn" class="btn danger">Logout</button>
+                <button id="get-profile-btn" class="btn">Get Profile</button>
+            </div>
+        </div>
+        
+        <!-- Posts Section -->
+        <div class="card">
+            <h2>📝 Posts</h2>
+            <div>
+                <button id="load-posts-btn" class="btn">Load Posts</button>
+                <button id="create-post-btn" class="btn">Create Post</button>
+                <button id="check-health-btn" class="btn">Health Check</button>
+            </div>
+            
+            <!-- Create Post Form -->
+            <div id="create-post-section" class="hidden">
+                <h3>Create New Post</h3>
+                <form id="create-post-form">
+                    <div class="form-group">
+                        <label for="post-title">Title:</label>
+                        <input type="text" id="post-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-content">Content:</label>
+                        <textarea id="post-content" rows="4" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px;" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-tags">Tags (comma-separated):</label>
+                        <input type="text" id="post-tags" placeholder="javascript, api, frontend">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="post-published" checked> Published
+                        </label>
+                    </div>
+                    <button type="submit" class="btn">Create Post</button>
+                    <button type="button" id="cancel-post-btn" class="btn">Cancel</button>
+                </form>
+            </div>
+            
+            <div id="posts-container">
+                <!-- Posts will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Kenx Frontend Client (simplified inline version)
+        class SimpleKenxClient {
+            constructor(baseUrl) {
+                this.baseUrl = baseUrl;
+                this.token = localStorage.getItem('kenx_token');
+            }
+            
+            async request(endpoint, options = {}) {
+                const url = `${this.baseUrl}${endpoint}`;
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                };
+                
+                if (this.token) {
+                    headers['Authorization'] = `Bearer ${this.token}`;
+                }
+                
+                try {
+                    const response = await fetch(url, {
+                        ...options,
+                        headers
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.error || data.message || 'Request failed');
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('API Error:', error);
+                    throw error;
+                }
+            }
+            
+            setToken(token) {
+                this.token = token;
+                localStorage.setItem('kenx_token', token);
+            }
+            
+            clearToken() {
+                this.token = null;
+                localStorage.removeItem('kenx_token');
+            }
+            
+            isAuthenticated() {
+                return !!this.token;
+            }
+        }
+        
+        // Initialize client
+        const API_BASE_URL = 'http://localhost:4000';
+        const client = new SimpleKenxClient(API_BASE_URL);
+        
+        // Update API URL display
+        document.getElementById('api-url').textContent = API_BASE_URL;
+        
+        // DOM elements
+        const statusEl = document.getElementById('status');
+        const loginSection = document.getElementById('login-section');
+        const registerSection = document.getElementById('register-section');
+        const userSection = document.getElementById('user-section');
+        const createPostSection = document.getElementById('create-post-section');
+        const postsContainer = document.getElementById('posts-container');
+        
+        // Utility functions
+        function showStatus(message, type = 'success') {
+            statusEl.innerHTML = `<div class="status ${type}">${message}</div>`;
+            setTimeout(() => statusEl.innerHTML = '', 5000);
+        }
+        
+        function updateUI() {
+            if (client.isAuthenticated()) {
+                loginSection.classList.add('hidden');
+                registerSection.classList.add('hidden');
+                userSection.classList.remove('hidden');
+            } else {
+                loginSection.classList.remove('hidden');
+                registerSection.classList.remove('hidden');
+                userSection.classList.add('hidden');
+                createPostSection.classList.add('hidden');
+            }
+        }
+        
+        // Authentication handlers
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                const response = await client.request('/api/v1/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password })
+                });
+                
+                if (response.success && response.data.token) {
+                    client.setToken(response.data.token);
+                    document.getElementById('current-user').textContent = response.data.user.username;
+                    showStatus(`Welcome back, ${response.data.user.username}!`);
+                    updateUI();
+                }
+            } catch (error) {
+                showStatus(`Login failed: ${error.message}`, 'error');
+            }
+        });
+        
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            try {
+                const response = await client.request('/api/v1/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                if (response.success && response.data.token) {
+                    client.setToken(response.data.token);
+                    document.getElementById('current-user').textContent = response.data.user.username;
+                    showStatus(`Account created! Welcome, ${response.data.user.username}!`);
+                    updateUI();
+                }
+            } catch (error) {
+                showStatus(`Registration failed: ${error.message}`, 'error');
+            }
+        });
+        
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            client.clearToken();
+            showStatus('Logged out successfully');
+            updateUI();
+        });
+        
+        document.getElementById('get-profile-btn').addEventListener('click', async () => {
+            try {
+                const response = await client.request('/api/v1/auth/profile');
+                if (response.success) {
+                    showStatus(`Profile: ${JSON.stringify(response.data, null, 2)}`);
+                }
+            } catch (error) {
+                showStatus(`Failed to get profile: ${error.message}`, 'error');
+            }
+        });
+        
+        // Posts handlers
+        document.getElementById('load-posts-btn').addEventListener('click', async () => {
+            try {
+                const response = await client.request('/api/v1/posts?limit=6');
+                
+                if (response.success && response.data) {
+                    const posts = response.data;
+                    postsContainer.innerHTML = `
+                        <h3>📚 Posts (${posts.length})</h3>
+                        <div class="posts-grid">
+                            ${posts.map(post => `
+                                <div class="post-card">
+                                    <div class="post-title">${post.title}</div>
+                                    <div class="post-content">${post.content.substring(0, 100)}...</div>
+                                    <div class="post-meta">
+                                        By: ${post.author?.username || 'Unknown'} | 
+                                        ${new Date(post.createdAt).toLocaleDateString()}
+                                        ${post.tags?.length ? ` | Tags: ${post.tags.join(', ')}` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                showStatus(`Failed to load posts: ${error.message}`, 'error');
+            }
+        });
+        
+        document.getElementById('create-post-btn').addEventListener('click', () => {
+            if (!client.isAuthenticated()) {
+                showStatus('Please login to create posts', 'error');
+                return;
+            }
+            createPostSection.classList.remove('hidden');
+        });
+        
+        document.getElementById('cancel-post-btn').addEventListener('click', () => {
+            createPostSection.classList.add('hidden');
+        });
+        
+        document.getElementById('create-post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('post-title').value;
+            const content = document.getElementById('post-content').value;
+            const tags = document.getElementById('post-tags').value.split(',').map(t => t.trim()).filter(t => t);
+            const published = document.getElementById('post-published').checked;
+            
+            try {
+                const response = await client.request('/api/v1/posts', {
+                    method: 'POST',
+                    body: JSON.stringify({ title, content, tags, published })
+                });
+                
+                if (response.success) {
+                    showStatus('Post created successfully!');
+                    createPostSection.classList.add('hidden');
+                    document.getElementById('create-post-form').reset();
+                    // Refresh posts
+                    document.getElementById('load-posts-btn').click();
+                }
+            } catch (error) {
+                showStatus(`Failed to create post: ${error.message}`, 'error');
+            }
+        });
+        
+        document.getElementById('check-health-btn').addEventListener('click', async () => {
+            try {
+                const response = await client.request('/api/v1/health');
+                if (response.success) {
+                    showStatus(`API Health: ${response.data.status} | Uptime: ${Math.floor(response.data.uptime)}s`);
+                }
+            } catch (error) {
+                showStatus(`Health check failed: ${error.message}`, 'error');
+            }
+        });
+        
+        // Initialize UI
+        updateUI();
+        
+        // Auto-load posts on page load
+        document.getElementById('load-posts-btn').click();
+    </script>
+</body>
+</html>

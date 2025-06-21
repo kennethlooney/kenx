@@ -1,7 +1,18 @@
 # Kenx Framework - Project Status & TODO
 
 > **Last Updated**: December 20, 2024  
-> **Status**: ✅ **MAJOR MILESTONE COMPLETED** - Wiki System Fully Functional!
+> **Status**: ✅ **MAJOR MILESTONE COMPLETED** - Authentication & Frontend/Backend Separation Ready!
+
+## 🔥 **NEXT PRIORITY: CLI Generator**
+
+> **🚨 IMPORTANT**: Now that authentication and frontend/backend separation are complete, the **CLI generator** should be the next major focus!
+> 
+> **Planned CLI**: `npx create-kenx-app my-app`
+> - 🏢 **Full-Stack Application** (Frontend + Backend together)
+> - 🔗 **API Backend Only** (For decoupled frontends)  
+> - 📱 **Frontend Client Only** (Connect to existing API)
+>
+> This will make Kenx much more accessible to new developers and dramatically improve the onboarding experience.
 
 ## 🎉 **COMPLETED ACHIEVEMENTS**
 
@@ -29,17 +40,25 @@
 - [x] **Cross-browser Compatibility** - Tested and working in multiple browsers
 - [x] **Local Wiki Integration** - Seamless integration between local development and GitHub
 
-### ✅ **GitHub Integration**
-- [x] **GitHub Wiki Sync** - Automated sync between local wiki and GitHub's wiki
-- [x] **GitHub Actions** - CI/CD workflow for automatic wiki synchronization
-- [x] **Sync Scripts** - Both manual and automated sync options
-- [x] **Documentation** - Complete guide for GitHub integration setup
+### ✅ **Authentication & Security System**
+- [x] **JWT Authentication** - Complete stateless token-based authentication
+- [x] **Session Management** - Traditional web session support
+- [x] **Hybrid Auth** - Support both JWT and sessions simultaneously
+- [x] **User Management** - Built-in user registration, login, password management
+- [x] **Role-based Access Control** - Fine-grained permission system
+- [x] **Password Security** - Secure hashing with salt and pepper
+- [x] **CSRF Protection** - Cross-site request forgery prevention
+- [x] **Rate Limiting** - Brute force attack protection
+- [x] **Security Headers** - HSTS, CSP, XSS protection, CORS
+- [x] **Auth Examples** - Complete working examples with all patterns
 
-### ✅ **Development Environment**  
-- [x] **VS Code Configuration** - Tasks, settings, and debugging setup
-- [x] **Git Workflow** - Clean git history with proper .gitignore
-- [x] **Package Management** - Workspace configuration with proper dependencies
-- [x] **Error Handling** - Robust error handling and logging throughout
+### ✅ **Frontend/Backend Separation**
+- [x] **API-Only Backend** - Pure REST API server deployment
+- [x] **Frontend Client Library** - TypeScript client for API consumption
+- [x] **CORS Support** - Cross-origin requests for decoupled frontends
+- [x] **Static Frontend Examples** - HTML, React, Vue integration examples
+- [x] **Deployment Documentation** - Complete deployment guides
+- [x] **Architecture Flexibility** - Support for monolithic, API-only, and hybrid patterns
 
 ## 🚀 **CURRENT STATUS**
 
@@ -89,12 +108,17 @@
 ### 🎯 **MEDIUM PRIORITY - Future Development**
 
 #### **Framework Features**
-- [ ] **Authentication System** - Built-in user auth with sessions/JWT
+- [x] **Authentication System** - ✅ COMPLETED - Built-in user auth with sessions/JWT
 - [ ] **File Upload Handling** - Multipart form handling and file storage
 - [ ] **Email System** - Built-in email sending capabilities  
 - [ ] **Caching Layer** - Redis/memory caching for performance
 - [ ] **Database Migrations** - Schema migration system for the ORM
-- [ ] **CLI Tools** - Command-line tools for project generation and management
+- [ ] **🔥 CLI Tools** - **HIGH PRIORITY** - Command-line tools for project generation and management
+  - **Planned Features**: `npx create-kenx-app` with project type selection:
+    - 🏢 **Full-Stack Application** (Frontend + Backend together)
+    - 🔗 **API Backend Only** (For decoupled frontends)
+    - 📱 **Frontend Client Only** (Connect to existing API)
+  - This will dramatically simplify new project setup!
 
 #### **Developer Experience**
 - [ ] **TypeScript Definitions** - Complete type definitions for all APIs
@@ -106,7 +130,7 @@
 #### **Production Readiness**
 - [ ] **Docker Support** - Containerization for easy deployment
 - [ ] **Environment Configuration** - Better config management for different environments
-- [ ] **Security Middleware** - CSRF, XSS protection, security headers
+- [x] **Security Middleware** - ✅ COMPLETED - CSRF, XSS protection, security headers
 - [ ] **Monitoring & Logging** - Application monitoring and structured logging
 - [ ] **Load Testing** - Performance testing and benchmarking
 

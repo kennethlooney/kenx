@@ -1,4 +1,4 @@
-# Kenx Framework Monorepo
+# Kenx Web Application Framework
 
 A modern, lightweight Node.js web framework built with TypeScript, featuring a monorepo structure with the framework and a demo website.
 
